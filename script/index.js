@@ -1,3 +1,8 @@
+const createElement = (arr) => {
+    const htmlElement = arr.map(el => `<span class="btn text-xs bg-blue-50 hover:bg-blue-100">${el}</span>`);
+    return htmlElement.join(" ");
+}
+
 const loadLessons = () => {
   fetch("https://openapi.programming-hero.com/api/levels/all")
     .then((resp) => resp.json())
@@ -24,6 +29,55 @@ const loadLevelWord = (id) => {
     });
 };
 
+const loadWordDetail = async(id) => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`;
+    const resp = await fetch(url);
+    const json = await resp.json();
+    displayWordDetail(json.data);
+}
+
+
+// "status": true,
+// "message": "successfully fetched a word details",
+// "data": {
+// "word": "Eager",
+// "meaning": "আগ্রহী",
+// "pronunciation": "ইগার",
+// "level": 1,
+// "sentence": "The kids were eager to open their gifts.",
+// "points": 1,
+// "partsOfSpeech": "adjective",
+// "synonyms": [
+// "enthusiastic",
+// "excited",
+// "keen"
+// ],
+// "id": 5
+// }
+
+const displayWordDetail = (word) => {
+    console.log(word);
+    const wordDetail = document.getElementById("word-detail");
+    wordDetail.innerHTML = `
+    <div class="text-2xl font-bold">
+                            <h1>${word.word} (<i class="fa-solid fa-microphone-lines"></i> : ${word.pronunciation} )</h1>
+                        </div>
+                        <div class="space-y-1">
+                            <h1 class="text-xs font-semibold">Meaning</h1>
+                            <p class="text-sm font-bangla">${word.meaning}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <h1 class="text-xs font-semibold">Example</h1>
+                            <p class="text-sm">${word.sentence}</p>
+                        </div>
+                        <div class="space-y-2">
+                            <h1 class="text-xs font-semibold">Synonyms</h1>
+                            <div class="flex flex-wrap gap-1">${createElement(word.synonyms)}</div>
+                        </div>
+    `;
+    document.getElementById("word_modal").showModal();
+}
+
 const displayLevelWord = (words) => {
 
     const cardContainer = document.getElementById("card-container");
@@ -37,19 +91,20 @@ const displayLevelWord = (words) => {
                     <h1 class="text-2xl font-semibold">অনুগ্রহ করে নেক্সট Lesson-এ যান।</h1>
                 </div>
         `;
+        return;
     }
 
     words.forEach((word) => {
         const cardDiv = document.createElement("div");
         cardDiv.innerHTML = `
-        <div id="card" class="bg-white rounded-xl py-10 px-5 text-center">
+        <div id="card" class="bg-white rounded-xl py-10 px-5 text-center h-full">
                     <h1 class="mb-3 text-xl font-semibold">${word.word ? word.word : "শব্দ পাওয়া যায়নি"}</h1>
                     <p class="mb-5 text-xs font-normal">Meaning / Pronounciation</p>
                     <div>
                         <h1 class="text-xl font-bangla font-semibold">"${word.meaning ? word.meaning : "শব্দার্থ পাওয়া যায়নি"} / ${word.pronunciation ? word.pronunciation : "উচ্চারণ পাওয়া যায়নি"}"</h1>
                     </div>
                     <div class="flex justify-between mt-5">
-                        <button class="btn bg-blue-50 hover:bg-blue-100"><i class="fa-solid fa-circle-info text-gray-600"></i></button>
+                        <button onclick = "loadWordDetail(${word.id})" class="btn bg-blue-50 hover:bg-blue-100"><i class="fa-solid fa-circle-info text-gray-600"></i></button>
                         <button class="btn bg-blue-50 hover:bg-blue-100"><i class="fa-solid fa-volume-high text-gray-600"></i></button>
                     </div>
                 </div>
@@ -61,12 +116,12 @@ const displayLevelWord = (words) => {
     })
 }
 
-displayLessons = (lessons) => {
+const displayLessons = (lessons) => {
   const lessonsContainer = document.getElementById("lessons-container");
   lessonsContainer.innerHTML = "";
 
   lessons.forEach((lesson) => {
-    const btnLesson = document.createElement("button");
+    const btnLesson = document.createElement("div");
     btnLesson.innerHTML = `
         <button id = "lesson-btn-${lesson.level_no}" onclick = "loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn">
         <i class="fa-solid fa-book-open"></i>Lesson ${lesson.level_no}
