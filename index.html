@@ -102,9 +102,26 @@
             </div>
         </section>
 
+        <!-- Search -->
+            <div class="join mt-10 flex justify-center">
+                <div>
+                    <label class="input validator join-item focus-within:outline-none border-[#422AD5]">
+                        <input id="input-value" type="text" placeholder="search here" required />
+                    </label>
+                </div>
+                <button id="searchBtn" class="btn btn-primary join-item">Search</button>
+            </div>
+        
+        <!-- Spinner -->
+        <section id="spinner" class="pt-10 flex justify-center items-center hidden">
+            <span class="loading loading-bars loading-xl text-[#422AD5]"></span>
+        </section>
+
+
         <!-- Card Container -->
          <section class="mt-10">
             <div id="card-container" class="bg-gray-100 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-5 p-5 md:p-10">
+                
                 <div class="text-center col-span-full space-y-3">
                     <h1 class="text-sm font-thin font-bangla">আপনি এখনো কোন Lesson সিলেক্ট করেন নি।</h1>
                     <h1 class="text-2xl font-semibold">অনুগ্রহ করে একটি Lesson সিলেক্ট করুন।</h1>
